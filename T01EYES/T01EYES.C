@@ -1,4 +1,5 @@
-#include <stdlib.h>
+
+  #include <stdlib.h>
 #include <math.h>
 
 #include <windows.h>
@@ -6,14 +7,13 @@
 /* Window class name */
 #define WND_CLASS_NAME "My Window Class"
 
-/* Forward references */
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
 
 /* The main program function */
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT CmdShow )
 {
-  WNDCLASS wc;                                                                                          
+  WNDCLASS wc;
   HWND hWnd;
   MSG msg;
 
@@ -25,25 +25,45 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   wc.hIcon = LoadIcon(NULL, IDI_EXCLAMATION);
   wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
   wc.hInstance = hInstance;
-  wc.lpszClassName = "My Window Class";
+  wc.lpszClassName = WND_CLASS_NAME;
   wc.lpszMenuName = NULL;
   wc.lpfnWndProc = MyWinFunc;
 
- /* Create window */
-  hWnd = CreateWindow("My Window Class",
+  if (!RegisterClass(&wc))
+  {
+    MessageBox(NULL, "Error register window class", "ERROR", MB_OK | MB_ICONERROR);
+    return 0;
+  }
+
+  /* Create window */
+  hWnd = CreateWindow(WND_CLASS_NAME,
     "30!",
     WS_OVERLAPPEDWINDOW,
     CW_USEDEFAULT, CW_USEDEFAULT,
     CW_USEDEFAULT, CW_USEDEFAULT,
     NULL, NULL, hInstance, NULL);
+  if (hWnd == NULL)
+  {
+    MessageBox(NULL, "Create window erroe", "ERROR", MB_OK | MB_ICONERROR);
+    return 0;
+  }
+
+  /* Show window */
+  ShowWindow(hWnd, CmdShow);
+  UpdateWindow(hWnd);                                                                        
+  /* Run message loop */
+
+  while (GetMessage(&msg, NULL, 0, 0))
+    DispatchMessage(&msg);
+
+  return 30;
 }
 
-void DrawEye(HWND hWnd, INT x, INT y, INT r, INT r1)
+void DrawEye(HWND hWnd, HDC hDC, INT x, INT y, INT r, INT r1)
 {
-  HDC hDC = GetDC(hWnd);
   POINT pt;
   INT dx, dy;
-  FLOAT t;
+  DOUBLE t;
   GetCursorPos(&pt);
   ScreenToClient(hWnd, &pt);
   dx = pt.x - x;
@@ -70,12 +90,10 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 
     switch (Msg)
   {
-  case WM_CREATE:
+  case WM_CREATE:                                                                                                                            
     SetTimer(hWnd, 30, 10, NULL);
-    GetObject(hBmLogo, sizeof(bm), &bm);
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
-    SelectObject(hMemDCLogo, hBmLogo);
     ReleaseDC(hWnd, hDC);
     return 0;
   case WM_SIZE:
@@ -91,8 +109,9 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     return 0;
   case WM_TIMER:
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
-    BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight, hMemDCLogo, 0, 0, SRCCOPY);
     srand(59);
+    for (i = 0; i < 100; i++)
+      DrawEye(hWnd, hMemDC, rand() % 1500, rand() % 1000, 30 , 10);
     SetBkMode(hMemDC, TRANSPARENT);
     SetTextColor(hMemDC, RGB(255, 0, 0));
     TextOut(hMemDC, 30, 30, "30!", 3);
@@ -100,7 +119,6 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    DrawEye(hWnd ,100, 100, 30 , 30);
     BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
     EndPaint(hWnd, &ps);
     return 0;
