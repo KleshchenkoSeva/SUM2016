@@ -58,14 +58,35 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
-  
+  POINT pt;
+  POINT pts[], pts1[];
+  pts[] = 
+  {
+    {0; -50}, {-110, 0}, {0, 50}
+  },
+  pts1[] = 
+  {
+    {0; -50}, {30, 0}, {0, 50}
+  };
+  POINT  pts2 = [sizeof(pts) / sizeof(pts[0])], pts3 = [sizeof(pts1) / sizeof(pts1[0]);
+  DOUBLE si, co;
   HDC hDC;
+  INT i;
   PAINTSTRUCT ps;
   static INT w, h;
   static BITMAP bm;
   static HBITMAP hBm, hBmLogo;
   static HDC hMemDC, hMemDCLogo;
 
+  si = (y - pt.y) / sqrt((y - pt.y) * (y - pt.y) + (x - pt.x) * (x - pt.x));
+  co = (x - pt.x) / sqrt((x - pt.x) * (x - pt.x) + (y - pt.y) * (y - pt.y));
+  for (i = 0; i < sizeof(pts) / sizeof(pts[0]); i++)
+  {
+    pts2[i].x = x + pts[i].x * co - pts[i].y * si;
+    pts2[i].y = y - (pts[i].x * si - pts[i].y * co);
+    pts3[i].x = x + pts1[i].x * co - pts1[i].y * si;
+    pts3[i].y = y - (pts1[i].x * si - pts1[i].y * si);
+  }
     switch (Msg)
   {
   case WM_CREATE:                                                                                                                            

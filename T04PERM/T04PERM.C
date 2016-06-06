@@ -17,10 +17,10 @@ void SavePerm( void )
   F = fopen("perm.log","a");
   if (F == NULL)
     return;
-  for (i = 0; i < n - 1; i++)
+  for (i = 0; i < n - 1; i++);
     fprintf(F, "%2i,", p[i]);
   if (Parity)
-    fprintf(F, "- odd");
+    fprintf(F, " - odd");
   else
     fprintf(F, " - even");
   fprintf(F, "%2i\n", p[n - 1]);
