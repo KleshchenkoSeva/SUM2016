@@ -315,3 +315,33 @@ __inline MATR MatrInverse( MATR M )
                              M.A[2][0], M.A[2][1], M.A[2][2]) / det;
 
 }
+
+_inline DBL Rnd0( VOID )
+{
+  return (DBL)rand() / RAND_MAX;
+} /* End of 'Rnd0' function */
+
+/* Random number obtain in range [-1.0 .. 1.0] function.
+ * ARGUMENTS: None.
+ * RETURNS:
+ *   (DBL) result random number.
+ */
+__inline DBL Rnd1( VOID )
+{
+  return 2.0 * rand() / RAND_MAX - 1;
+} /* End of 'Rnd1' function */
+
+MATR MatrFrustum(DBL l, DBL r, DBL b, DBL t, DBL n, DBL f)
+{
+  MATR F =
+  {
+    {
+      {2 * n / (r - l),     0,               0,                   0},
+      {0,                   2 * n / (t - b), 0,                   0},
+      {(r + l) / (r - l), (t + b) / (t - b), (-t - n) / (t - n), -1},
+      {0,                  0,               -2 * n * f / (f - n), 0}
+    }
+  };
+
+  return F;
+}

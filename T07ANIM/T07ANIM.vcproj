@@ -195,7 +195,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RENDER.C"
+				>
+			</File>
+			<File
+				RelativePath=".\U_BALL.C"
+				>
+			</File>
+			<File
+				RelativePath=".\U_CUBE.C"
+				>
+			</File>
+			<File
 				RelativePath=".\UNITS.C"
+				>
+			</File>
+			<File
+				RelativePath=".\UNITS.H"
 				>
 			</File>
 			<File

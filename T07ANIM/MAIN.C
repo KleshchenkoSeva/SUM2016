@@ -1,7 +1,9 @@
- #include <stdlib.h>
+#include <stdlib.h>
 #include <math.h>
-#include "def.h"
 #include <windows.h>
+
+#include "anim.h"
+#include "units.h"
 
 /* Window class name */
 #define WND_CLASS_NAME "My Window Class"
@@ -12,9 +14,12 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT CmdShow )
 {
+  INT i;
   WNDCLASS wc;
   HWND hWnd;
   MSG msg;
+
+  SetDbgMemHooks();
 
   /* Register window class */
   wc.style = 0;
@@ -50,7 +55,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   /* Show window */
   ShowWindow(hWnd, CmdShow);
   UpdateWindow(hWnd);                                                                        
-  /* Run message loop */
+  for (i = 0; i < 1000; i++)
+    VK3_AnimAddUnit(VK3_UnitCreateBall());
 
   while (GetMessage(&msg, NULL, 0, 0))
     DispatchMessage(&msg);
@@ -62,47 +68,42 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
   HDC hDC;
   PAINTSTRUCT ps;
-  static INT w, h;
-  static BITMAP bm;
-  static HBITMAP hBm, hBmLogo;
-  static HDC hMemDC, hMemDCLogo;
-
+  MINMAXINFO *MinMax;
     switch (Msg)
   {
+  case WM_GETMINMAXINFO:
+    MinMax = (MINMAXINFO *)lParam;
+    MinMax->ptMaxTrackSize.y = 
+      GetSystemMetrics(SM_CYMAXTRACK) +
+      GetSystemMetrics(SM_CYCAPTION) +
+      GetSystemMetrics(SM_CYMENU) +
+      GetSystemMetrics(SM_CYBORDER) * 2;
+    return 0;
   case WM_CREATE:                                                                                                                            
     SetTimer(hWnd, 30, 10, NULL);
-    hDC = GetDC(hWnd);
-    hMemDC = CreateCompatibleDC(hDC);
-    ReleaseDC(hWnd, hDC);
+    VK3_AnimInit(hWnd);
     return 0;
   case WM_SIZE:
-    w = LOWORD(lParam);
-    h = HIWORD(lParam);
-    if (hBm != NULL)
-      DeleteObject(hBm);
-    hDC = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDC, w, h);
-    ReleaseDC(hWnd, hDC);
-    SelectObject(hMemDC, hBm);
+    VK3_AnimResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
+  case WM_MOUSEWHEEL:
+    VK3_MouseWheel += (SHORT)HIWORD(wParam);
+    return 0;
   case WM_TIMER:
-    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
-    srand(59);
-    SetBkMode(hMemDC, TRANSPARENT);
-    SetTextColor(hMemDC, RGB(255, 0, 0));
-    TextOut(hMemDC, 30, 30, "30!", 3);
+    VK3_AnimRender();
     InvalidateRect(hWnd, NULL, FALSE);
+    return 0;
+  case WM_ERASEBKGND:
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
+    VK3_AnimCopyFrame(hDC);
     EndPaint(hWnd, &ps);
     return 0;
   case WM_DESTROY:
+    VK3_AnimClose();
     KillTimer(hWnd, 30);
-    DeleteDC(hMemDC);
-    DeleteObject(hBm);
     PostQuitMessage(0);
     return 0;
   }
