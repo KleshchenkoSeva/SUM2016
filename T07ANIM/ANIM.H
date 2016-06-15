@@ -92,5 +92,15 @@ VOID VK3_AnimFlipFullScreen( VOID );
  *   (vk34UNIT *) pointer to created unit.
  */
 vk3UNIT * VK3_AnimUnitCreate( INT Size );
+/*
+extern MATR
+  VG4_RndMatrWorld, 
+  VG4_RndMatrView,   
+  VG4_RndMatrProj;  
+extern DBL
+  VG4_RndProjDist, 
+  VG4_RndFarClip,  
+  VG4_RndProjSize; 
 
 #endif /*__ANIM_H_*/
+*/
