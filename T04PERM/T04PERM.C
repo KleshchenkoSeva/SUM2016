@@ -1,54 +1,68 @@
 #include <stdio.h>
-#define n 5
-int p[n], Parity = 0;
+#define N 5
 
-void Swap( int *a, int *b)
-{
-  int tmp = *a;
-  *a = *b;
-  *b = tmp;
-}
-
+int P[N], Parity = 0;
 
 void SavePerm( void )
 {
   int i;
+
   FILE *F;
-  F = fopen("perm.log","a");
+  F = fopen("perm.log", "a");
   if (F == NULL)
     return;
-  for (i = 0; i < n - 1; i++);
-    fprintf(F, "%2i,", p[i]);
+  for (i = 0; i < N; i++)
+    fprintf(F, "%2i", P[i]);
   if (Parity)
-    fprintf(F, " - odd");
+    fprintf(F, " - odd\n");
   else
-    fprintf(F, " - even");
-  fprintf(F, "%2i\n", p[n - 1]);
+    fprintf(F, " - even\n");
   fclose(F);
+}
+
+void Swap( int *A, int *B)
+{
+  int tmp = *A;
+  *A = *B;
+  *B = tmp;
 }
 
 void Go( int Pos )
 {
-  int i;
-  if (Pos == n)
-    SavePerm();
-  else
+  int i, x, SaveParity;
+
+  if (Pos == N)
   {
-    for (i = Pos; i < n; i++)
+    SavePerm();
+    return;
+  }
+  else 
+  {
+
+    Go(Pos + 1);
+    SaveParity = Parity;
+    for (i = Pos + 1; i < N; i++)
     {
-      if (Pos != 1)
-        Swap(&p[Pos], &p[i], Parity = !Parity);
+ 
+      Swap(&P[Pos], &P[i]);
+      Parity = !Parity;
       Go(Pos + 1);
-      if (Pos != 1)
-        Swap(&p[Pos], &p[i], Parity = !Parity);
     }
+   
+    x = P[Pos];
+    for (i = Pos + 1; i < N; i++)
+      P[i - 1] = P[i];
+    P[N - 1] = x;
+    Parity = SaveParity;
   }
 }
 
 void main( void )
 {
   int i;
-  for (i = 0; i < n; i++)
-    p[i] = i + 1;
+
+  for (i = 0; i < N; i++)
+    P[i] = i  + 1;
   Go(0);
-}    
+}
+

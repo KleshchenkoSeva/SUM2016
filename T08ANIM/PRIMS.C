@@ -1,3 +1,6 @@
+#include "anim.h"
+
+
 VOID VK3_RndPrimFree( vk3PRIM *Pr )
 {
   if (Pr->P != NULL)
@@ -5,7 +8,7 @@ VOID VK3_RndPrimFree( vk3PRIM *Pr )
   if (Pr->Edges != NULL)
     free(Pr->Edges);
   memset(Pr, 0, sizeof(vk3PRIM));
-} /* End of 'VG4_RndPrimFree' function */
+} /* End of 'VK3_RndPrimFree' function */
 
 
 /* Vertex representation type */
@@ -117,5 +120,5 @@ BOOL VK3_RndPrimLoad( vk3PRIM *Pr, CHAR *FileName )
   }
   fclose(F);
   return TRUE;
-} /* End of 'VG4_RndPrimLoad' function */
+} /* End of 'VK3_RndPrimLoad' function */
 

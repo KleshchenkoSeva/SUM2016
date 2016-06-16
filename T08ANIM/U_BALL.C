@@ -1,10 +1,10 @@
 #include <time.h>
-
+#include <stdio.h>
 #include "anim.h"
 
 typedef struct
 {
-  vk3UNIT;                                   VEC2
+  vk3UNIT;                                   
   VEC Pos;
   VEC Shift;
   DBL TimerShift;

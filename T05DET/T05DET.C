@@ -1,64 +1,69 @@
 #include <stdio.h>
-#define n 5
-#define MAX 30
+#define MAX 3
 
-int p[n], Parity = 0;
-double A[MAX][MAX], sum;
+int n;
+int P[MAX], Parity = 0;
+double A[MAX][MAX], sum = 0;
 
-
-void LoadMatrix( char *FileName)
+void LoadMatrix( char *FileName )
 {
   int i, j;
+
   FILE *F;
-  F = fopen(FileName, "r");                                                                                                  
-    return;
+  F = fopen(FileName, "r");
   if (F == NULL)
+    return;
   fscanf(F, "%d", &n);
   for (i = 0; i < n; i++)
-    for (j = 0; j < n; j++)
+    for(j = 0; j < n; j++)
       fscanf(F, "%lf", &A[i][j]);
   fclose(F);
-
-}
-                 
-void Swap( int *a, int *b)
+} 
+void Swap( int *A, int *B )
 {
-  int tmp = *a;
-  Parity = !Parity;
-  *a = *b;
-  *b = tmp;
+  int tmp = *A;
+  *A = *B;
+  *B = tmp;
 }
+
 
 void Go( int Pos )
 {
-  int i, x, SaveParity;
-  if (Pos == n)
-    return;
-  else
+  int i;
+  double prod = 1;
+
+ if (Pos == n)
   {
-    Go(Pos + 1);
-    SaveParity = Parity;
-    for (i = Pos + 1; i < n; i++)
-    {
-      Swap(&p[Pos], &p[i]);
-      Parity  = !Parity;
-      Go(Pos + 1);
-    }
-    x = p[Pos];
-    for (i = Pos + 1; i < n; i++)
-      p[i - 1] = p[i];
-    p[n - 1] = x;
-    Parity = SaveParity;
+    for(i = 0; i < n; i++) 
+      prod *= A[i][P[i]];
+    if (Parity == 0)
+      sum += prod;
+    else
+      sum -= prod;
+    return;
   }
+ else
+ {
+   Go(Pos + 1);
+   for (i = Pos + 1; i < n; i++)
+   {
+     Swap(&P[Pos], &P[i]);
+     Parity = !Parity;
+     Go(Pos + 1);
+     Swap(&P[Pos], &P[i]);
+     Parity = !Parity;
+   }
+ }
 }
 
 double EvalDeterminant( char *FileName )
 {
   int i;
+
   LoadMatrix(FileName);
   sum = 0;
   for (i = 0; i < n; i++)
-    p[i] = i;
+    P[i] = i;
   Go(0);
   return sum;
 }
@@ -68,11 +73,9 @@ void main( void )
   int i;
   char *M[] =
   {
-    "mat1.txt", "mat2.txt"
-  };
+    "mat3.txt"
+  } ;
+
   for (i = 0; i < sizeof(M) / sizeof(M[0]); i++)
     printf("Det(%d)[%s] = %f\n", i, M[i], EvalDeterminant(M[i]));
-  for (i = 0; i < n; i++)
-    p[i] = i;
-  Go(0);
-}    
+}

@@ -191,6 +191,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IMAGE.C"
+				>
+			</File>
+			<File
+				RelativePath=".\IMAGE.H"
+				>
+			</File>
+			<File
 				RelativePath=".\LOADPRIM.C"
 				>
 			</File>
@@ -212,6 +220,10 @@
 			</File>
 			<File
 				RelativePath=".\U_BALL.C"
+				>
+			</File>
+			<File
+				RelativePath=".\U_CONTRL.C"
 				>
 			</File>
 			<File

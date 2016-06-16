@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#include <time.h>
 #include "anim.h"
 
 /* Save text to log file function.
@@ -11,16 +11,16 @@
  *       CHAR *Text;
  * RETURNS: None.
  */
-static VOID VG4_RndShaderLog( CHAR *Stage, CHAR *Text )
+static VOID VK3_RndShaderLog( CHAR *Stage, CHAR *Text )
 {
   FILE *F;
 
-  if ((F = fopen("VG4{SHAD}30.LOG", "a")) != NULL)
+  if ((F = fopen("VK3{SHAD}30.LOG", "a")) != NULL)
   {
     fprintf(F, "%s: %s\n", Stage, Text);
     fclose(F);
   }
-} /* End of 'VG4_RndShaderLoadTextFile' function */
+} /* End of 'VK3_RndShaderLoadTextFile' function */
 
 /* Text file load to memory function.
  * ARGUMENTS:
@@ -90,7 +90,7 @@ UINT VK3_RndShaderLoad( CHAR *FileNamePrefix )
     }
     /* Load text file */
     sprintf(buf, "%s.%s", FileNamePrefix, suff[i]);
-    txt = VG4_RndShaderLoadTextFile(buf);
+    txt = VK3_RndShaderLoadTextFile(buf);
     if (txt == NULL)
     {
       VK3_RndShaderLog(suff[i], "No file");
