@@ -65,8 +65,11 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   {
   case WM_CREATE:                                                                                                                            
     SetTimer(hWnd, 30, 10, NULL);
+    hBmLogo = LoadImage(NULL, "GLOB.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    GetObject(hBmLogo, sizeof(bm), &bm);
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
+    hMemDCLogo = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
     return 0;
   case WM_SIZE:
@@ -84,9 +87,10 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     return;
   case WM_TIMER:
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
+    BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight, hMemDCLogo, 0, 0, SRCCOPY);
     srand(59);
-    SetBkMode(hMemDC, TRANSPARENT);
     DrawSphere(hMemDC, w / 2, h / 2 );
+    SetBkMode(hMemDC, TRANSPARENT);
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
