@@ -45,7 +45,7 @@ VOID LoadSphere( VOID )
 
   /* Load image from file */
   hMemDC = CreateCompatibleDC(hDC);
-  hBm = LoadImage(NULL, "E.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+  hBm = LoadImage(NULL, "GLOBE.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
   GetObject(hBm, sizeof(bm), &bm);
   Globe.W = bm.bmWidth;
   Globe.H = bm.bmHeight;
