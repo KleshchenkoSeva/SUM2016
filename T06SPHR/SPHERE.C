@@ -6,6 +6,7 @@
 #define n 40
 #define m 80
 #define pi 3.141592653589
+#pragma warning(disable: 4244)
 
 typedef DOUBLE DBL;
 
@@ -13,7 +14,12 @@ typedef struct
 {
   DBL x, y, z;
 }VEC;
-
+typedef struct
+{
+  HBITMAP hBmGlobe;
+  DWORD *Bits;
+  INT W, H;
+} IMG;
 VEC Rot( VEC V, DBL Angle )
 {
   DBL A = Angle * pi / 60;
