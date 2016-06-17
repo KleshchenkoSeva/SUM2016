@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <conio.h>
 #define MAX 3
 
-int n;
-int P[MAX], Parity = 0;
-double A[MAX][MAX], sum = 0;
+int n, P[MAX];
+double A[MAX][MAX], sum;
+char Parity = 1, SaveParity;
 
 void LoadMatrix( char *FileName )
 {
@@ -36,7 +37,7 @@ void Go( int Pos )
   {
     for(i = 0; i < n; i++) 
       prod *= A[i][P[i]];
-    if (Parity == 0)
+    if (Parity)
       sum += prod;
     else
       sum -= prod;
@@ -48,10 +49,12 @@ void Go( int Pos )
    for (i = Pos + 1; i < n; i++)
    {
      Swap(&P[Pos], &P[i]);
-     Parity = !Parity;
+     if (Pos != i)
+       Parity = !Parity;
      Go(Pos + 1);
-     Swap(&P[Pos], &P[i]);
-     Parity = !Parity;
+     if ( Pos != i)
+       Parity = !Parity;
+    Swap(&P[Pos], &P[i]);   
    }
  }
 }
@@ -73,9 +76,11 @@ void main( void )
   int i;
   char *M[] =
   {
-    "mat3.txt"
+    "mat3.txt", "mat1.txt", "mat2.txt", "mat4.txt"
   } ;
-
+  for (i = 0; i < n; i++)
+    P[i] = i;
   for (i = 0; i < sizeof(M) / sizeof(M[0]); i++)
     printf("Det(%d)[%s] = %f\n", i, M[i], EvalDeterminant(M[i]));
+  _getch();    
 }
