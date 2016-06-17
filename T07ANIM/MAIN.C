@@ -55,8 +55,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   /* Show window */
   ShowWindow(hWnd, CmdShow);
   UpdateWindow(hWnd);                                                                        
-  for (i = 0; i < 1000; i++)
-    VK3_AnimAddUnit(VK3_UnitCreateBall());
+  VK3_AnimAddUnit(VK3_UnitCreateBall());
+  VK3_AnimAddUnit(VK3_UnitCreateCube());  
 
   while (GetMessage(&msg, NULL, 0, 0))
     DispatchMessage(&msg);
