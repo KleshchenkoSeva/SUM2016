@@ -7,12 +7,12 @@
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
 
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    CHAR *CmdLine, INT CmdShow )
+CHAR *CmdLine, INT CmdShow )
 {
   WNDCLASS wc;
   HWND hWnd;
   MSG msg;
-  
+
   wc.style = 0;
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
@@ -31,11 +31,11 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   }
 
   hWnd = CreateWindow(WND_CLASS_NAME,
-    "30!",
-    WS_OVERLAPPEDWINDOW,
-    CW_USEDEFAULT, CW_USEDEFAULT,
-    CW_USEDEFAULT, CW_USEDEFAULT,
-    NULL, NULL, hInstance, NULL);
+  "30!",
+  WS_OVERLAPPEDWINDOW,
+  CW_USEDEFAULT, CW_USEDEFAULT,
+  CW_USEDEFAULT, CW_USEDEFAULT,
+  NULL, NULL, hInstance, NULL);
   if (hWnd == NULL)
   {
     MessageBox(NULL, "Create window erroe", "ERROR", MB_OK | MB_ICONERROR);
@@ -43,14 +43,12 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   }
 
   ShowWindow(hWnd, CmdShow);
-  UpdateWindow(hWnd);                                                                        
+  UpdateWindow(hWnd); 
 
   while (GetMessage(&msg, NULL, 0, 0))
     DispatchMessage(&msg);
-
-  return 30;
+  return 30;  
 }
-
 
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
@@ -61,49 +59,51 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   static HBITMAP hBm, hBmLogo;
   static HDC hMemDC, hMemDCLogo;
 
-    switch (Msg)
+  switch (Msg)
   {
-  case WM_CREATE:                                                                                                                            
-    SetTimer(hWnd, 30, 10, NULL);
-    hBmLogo = LoadImage(NULL, "GLOB.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    GetObject(hBmLogo, sizeof(bm), &bm);
-    hDC = GetDC(hWnd);
-    hMemDC = CreateCompatibleDC(hDC);
-    hMemDCLogo = CreateCompatibleDC(hDC);
-    ReleaseDC(hWnd, hDC);
-    return 0;
-  case WM_SIZE:
-    w = LOWORD(lParam);
-    h = HIWORD(lParam);
-    if (hBm != NULL)
+    case WM_CREATE: 
+      SetTimer(hWnd, 30, 10, NULL);
+      hBmLogo = LoadImage(NULL, "GLOBE.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+      GetObject(hBmLogo, sizeof(bm), &bm);
+      hDC = GetDC(hWnd);
+      hMemDC = CreateCompatibleDC(hDC);
+      hMemDCLogo = CreateCompatibleDC(hDC);
+      ReleaseDC(hWnd, hDC);
+      LoadSphere();
+      return 0;
+    case WM_SIZE:
+      w = LOWORD(lParam);
+      h = HIWORD(lParam);
+      if (hBm != NULL)
       DeleteObject(hBm);
-    hDC = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDC, w, h);
-    ReleaseDC(hWnd, hDC);
-    SelectObject(hMemDC, hBm);
-    SendMessage(hWnd, WM_TIMER, 0, 0);
-    return 0;
-  case WM_ERASEBKGND:
-    return;
-  case WM_TIMER:
-    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
-    BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight, hMemDCLogo, 0, 0, SRCCOPY);
-    srand(59);
-    DrawSphere(hMemDC, w / 2, h / 2 );
-    SetBkMode(hMemDC, TRANSPARENT);
-    InvalidateRect(hWnd, NULL, FALSE);
-    return 0;
-  case WM_PAINT:
-    hDC = BeginPaint(hWnd, &ps);
-    BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
-    EndPaint(hWnd, &ps);
-    return 0;
-  case WM_DESTROY:
-    KillTimer(hWnd, 30);
-    DeleteDC(hMemDC);
-    DeleteObject(hBm);
-    PostQuitMessage(0);
-    return 0;
+      hDC = GetDC(hWnd);
+      hBm = CreateCompatibleBitmap(hDC, w, h);
+      ReleaseDC(hWnd, hDC);
+      SelectObject(hMemDC, hBm);
+      SendMessage(hWnd, WM_TIMER, 0, 0);
+      return 0;
+    case WM_ERASEBKGND:
+      return 0;
+    case WM_TIMER:
+      Rectangle(hMemDC, 0, 0, w + 1, h + 1);
+      BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight, hMemDCLogo, 0, 0, SRCCOPY);
+      srand(59);
+      DrawSphere(hMemDC, w / 2, h / 2);
+      SetBkMode(hMemDC, TRANSPARENT);
+      InvalidateRect(hWnd, NULL, FALSE);
+      return 0;
+    case WM_PAINT:
+      hDC = BeginPaint(hWnd, &ps);
+      BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
+      EndPaint(hWnd, &ps);
+      return 0;
+    case WM_DESTROY:
+      KillTimer(hWnd, 30);
+      DeleteDC(hMemDC);
+      DeleteObject(hBm);
+      PostQuitMessage(0);
+      return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
+/* End of  "T06SPHR" file */
