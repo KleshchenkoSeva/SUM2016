@@ -15,7 +15,7 @@ VOID Draw(HDC hDC, HWND hWnd, INT X, INT Y, INT s, INT l, DOUBLE a, INT r, INT g
   INT i; 
   DOUBLE si, co;
   SYSTEMTIME t;
-  DOUBLE pi = 3.141592653589;
+  DOUBLE pi = 3.14159265358979323846;
   POINT p[] = 
   { 
     { 0, -s },{ -s, 0 },{ 0, l } 
@@ -149,10 +149,10 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     a = (t.wSecond + t.wMilliseconds / 1000.0) * 2 * p / 60;
     Draw(hMemDC, hWnd, w / 2, h / 2, 4, 250, a, 255, 0, 0, 255, 0, 0);
     
-    a = (t.wMinute + t.wSecond / 60.0)  * 2 * p / 60;
+    a = (t.wMinute + t.wMilliseconds / 60000.0)  * 2 * p / 60;
     Draw(hMemDC, hWnd, w / 2, h / 2, 6, 200, a, 0, 0, 0, 90, 90, 90);
     
-    a = (t.wHour + t.wMinute / 60.0) / 12 * 2 * p / 60 - 0.28;
+    a = (t.wHour + t.wMilliseconds / 3600000.0) / 12 * 2 * p / 60;
     Draw(hMemDC, hWnd, w / 2, h / 2, 8, 150, a, 90, 90, 90, 0, 0, 0);
     
     
