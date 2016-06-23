@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <windows.h>
+#include <time.h>
 
 /* Window class name */
 #define WND_CLASS_NAME "My Window Class"
@@ -8,6 +9,51 @@
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
 
 /* The main program function */
+
+VOID Draw(HDC hDC, HWND hWnd, INT X, INT Y, INT s, INT l, DOUBLE a, INT r, INT g, INT b, INT n, INT c, INT d) 
+{ 
+  INT i; 
+  DOUBLE si, co;
+  SYSTEMTIME t;
+  DOUBLE pi = 3.141592653589;
+  POINT p[] = 
+  { 
+    { 0, -s },{ -s, 0 },{ 0, l } 
+  }; 
+  POINT p1[] = 
+  { 
+    { 0, -s },{ s, 0 },{ 0, l } 
+  }; 
+  POINT pts1[sizeof(p) / sizeof(p[0])]; 
+  POINT pts2[sizeof(p1) / sizeof(p1[0])]; 
+
+  si = sin(a);
+  co = cos(a); 
+
+  for (i = 0; i < sizeof(p) / sizeof(p[0]); i++) 
+  { 
+    pts1[i].x = X + p[i].x * co + p[i].y * si; 
+    pts1[i].y = Y - (-p[i].x * si + p[i].y * co); 
+    pts2[i].x = X + p1[i].x * co + p1[i].y * si; 
+    pts2[i].y = Y - (-p1[i].x * si + p1[i].y * co); 
+  } 
+  SelectObject(hDC, GetStockObject(DC_PEN)); 
+  SelectObject(hDC, GetStockObject(DC_BRUSH)); 
+
+  srand(clock() / 1000); 
+
+  SetDCPenColor(hDC, RGB(r, g, b)); 
+  SetDCBrushColor(hDC, RGB(r, g, b)); 
+  Polygon(hDC, pts1, sizeof(p) / sizeof(p[0])); 
+
+  SetDCPenColor(hDC, RGB(n, c, d)); 
+  SetDCBrushColor(hDC, RGB(n, c, d)); 
+  Polygon(hDC, pts2, sizeof(p1) / sizeof(p1[0])); 
+
+  SetDCPenColor(hDC, RGB(255, 255, 255)); 
+  SetDCBrushColor(hDC, RGB(255, 255, 255)); 
+} /* End of 'Draw' function */ 
+
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT CmdShow )
 {
@@ -72,7 +118,7 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 10, NULL);
-    hBmLogo = LoadImage(NULL, "SE.BMP", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    hBmLogo = LoadImage(NULL, "s.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     GetObject(hBmLogo, sizeof(bm), &bm);
     hDC = GetDC(hWnd);
     hMemDC = CreateCompatibleDC(hDC);
@@ -99,18 +145,17 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     srand(59);
     SetBkMode(hMemDC, TRANSPARENT);
     SetTextColor(hMemDC, RGB(255, 0, 0));
+    
     a = (t.wSecond + t.wMilliseconds / 1000.0) * 2 * p / 60;
-    r = bm.bmHeight / 2.3;
-    MoveToEx(hMemDC, w / 2, h / 2, NULL);
-    LineTo(hMemDC, w / 2 + sin(a) * r, h / 2 - cos(a) * r);
+    Draw(hMemDC, hWnd, w / 2, h / 2, 4, 250, a, 255, 0, 0, 255, 0, 0);
+    
     a = (t.wMinute + t.wSecond / 60.0)  * 2 * p / 60;
-    r = bm.bmHeight / 3.3;
-    MoveToEx(hMemDC, w / 2, h / 2, NULL);
-    LineTo(hMemDC, w / 2 + sin(a) * r, h / 2 - cos(a) * r);
-    a = (t.wHour + t.wMinute / 60.0) / 12 * 2 * p / 60;
-    r = bm.bmHeight / 4.2;
-    MoveToEx(hMemDC, w / 2, h / 2, NULL);
-    LineTo(hMemDC, w / 2 + sin(a) * r , h / 2 - cos(a) * r);
+    Draw(hMemDC, hWnd, w / 2, h / 2, 6, 200, a, 0, 0, 0, 90, 90, 90);
+    
+    a = (t.wHour + t.wMinute / 60.0) / 12 * 2 * p / 60 - 0.28;
+    Draw(hMemDC, hWnd, w / 2, h / 2, 8, 150, a, 90, 90, 90, 0, 0, 0);
+    
+    
     TextOut(hMemDCLogo, 30, 30, s, sprintf(s, "%02i.%02i.%i", t.wDay, t.wMonth, t.wYear));
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
