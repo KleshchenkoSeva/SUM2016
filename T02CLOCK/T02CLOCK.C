@@ -153,7 +153,7 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     Draw(hMemDC, hWnd, w / 2, h / 2, 6, 200, a, 0, 0, 0, 90, 90, 90);
     
     a = (t.wHour + t.wMilliseconds / 3600000.0) / 12 * 2 * p / 60;
-    Draw(hMemDC, hWnd, w / 2, h / 2, 8, 150, a, 90, 90, 90, 0, 0, 0);
+    Draw(hMemDC, hWnd, w / 2, h / 2, 8, 150, a, 0, 0, 0, 90, 90, 90);
     
     
     TextOut(hMemDCLogo, 30, 30, s, sprintf(s, "%02i.%02i.%i", t.wDay, t.wMonth, t.wYear));
